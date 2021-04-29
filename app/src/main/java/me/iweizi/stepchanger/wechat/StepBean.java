@@ -1,10 +1,13 @@
 package me.iweizi.stepchanger.wechat;
+import com.topjohnwu.superuser.io.SuFileInputStream;
+import com.topjohnwu.superuser.io.SuFileOutputStream;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -26,7 +29,7 @@ abstract class StepBean {
     }
 
     public void read() throws IOException, ClassCastException , ClassNotFoundException{
-        FileInputStream fis = new FileInputStream(mCfgFile);
+        InputStream fis = SuFileInputStream.open(mCfgFile);
         ObjectInputStream ois = new ObjectInputStream(fis);
         // noinspection unchecked
         mStepCounterMap = (HashMap<Integer, Object>) ois.readObject();
@@ -38,10 +41,10 @@ abstract class StepBean {
 
     public void write(long step) throws IOException {
         // push
-        FileOutputStream fos;
+        OutputStream fos;
         ObjectOutputStream oos;
 
-        fos = new FileOutputStream(mCfgFile);
+        fos = SuFileOutputStream.open(mCfgFile);
         oos = new ObjectOutputStream(fos);
         writeStep(step);
         oos.writeObject(mStepCounterMap);
