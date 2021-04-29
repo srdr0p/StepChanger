@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 
-import eu.chainfire.libsuperuser.Shell;
+import com.topjohnwu.superuser.Shell;
+
 import me.iweizi.stepchanger.utils.Utils;
 
 /**
@@ -229,13 +231,12 @@ public class StepData {
         @Override
         protected Void doInBackground(Boolean... booleans) {
             isRead = booleans[0];
-            mSuAvailable = Shell.SU.available();
+            mSuAvailable = Shell.rootAccess();
             if (mSuAvailable) {
-                try {
-                    Shell.Pool.SU.run(ROOT_CMD);
-                } catch (Shell.ShellDiedException e) {
-                    Log.e("StepChanger", e.toString());
-                }
+                  Shell.Result result =  Shell.su(ROOT_CMD).exec();
+                  if (result.getCode() != 0) {
+                      Log.e("StepChanger", TextUtils.join("\n", result.getErr()));
+                  }
             }
             return null;
         }

@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.topjohnwu.superuser.Shell;
+
 import java.util.ArrayList;
 
 import me.iweizi.stepchanger.alipay.AlipayFragment;
@@ -22,6 +24,15 @@ import me.iweizi.stepchanger.utils.StepCounterSensorListener;
 import me.iweizi.stepchanger.wechat.WechatFragment;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+
+    static {
+        // Set settings before the main shell can be created
+        Shell.enableVerboseLogging = BuildConfig.DEBUG;
+        Shell.setDefaultBuilder(Shell.Builder.create()
+                .setFlags(Shell.FLAG_REDIRECT_STDERR)
+                .setTimeout(10)
+        );
+    }
 
     private BottomNavigationView mBottomNavigationView;
     private ViewPager mViewPager;
@@ -39,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Shell.getShell();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

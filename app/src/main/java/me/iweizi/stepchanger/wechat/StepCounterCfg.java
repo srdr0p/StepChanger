@@ -13,10 +13,10 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
-import eu.chainfire.libsuperuser.Shell;
 import me.iweizi.stepchanger.MyApplication;
 import me.iweizi.stepchanger.R;
 import me.iweizi.stepchanger.StepData;
+import com.topjohnwu.superuser.Shell;
 
 /**
  * Created by iweiz on 2017/9/4.
@@ -128,7 +128,7 @@ class StepCounterCfg extends StepData {
 
         killWechatProcess(context);
         try {
-            Shell.Pool.SU.run(ROOT_CMD);
+            Shell.su(ROOT_CMD).exec();
             mStepBean.read();
 
             fis = new FileInputStream(mod_upload_status_cfg);
@@ -154,7 +154,7 @@ class StepCounterCfg extends StepData {
                     String.format("cp %s %s", mod_step_cfg, wx_local_step_cfg),
                     String.format("cp %s %s", mod_upload_status_cfg, wx_upload_status_cfg),
             };
-            Shell.Pool.SU.run(restore);
+            Shell.su(restore).exec();
             return SUCCESS;
         } catch (Exception e) {
             return FAIL;

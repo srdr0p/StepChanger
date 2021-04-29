@@ -7,6 +7,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Base64;
 
+import com.topjohnwu.superuser.Shell;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,7 +22,6 @@ import java.security.Signature;
 import java.security.cert.CertificateException;
 import java.util.Enumeration;
 
-import eu.chainfire.libsuperuser.Shell;
 import me.iweizi.stepchanger.R;
 import me.iweizi.stepchanger.StepData;
 import me.iweizi.stepchanger.utils.Utils;
@@ -104,9 +105,7 @@ public class StepInfo extends StepData {
         byte[] ciphertext;
         byte[] plaintext;
         try {
-            Shell.SU.run(new String[]{
-                    "cat " + ORIG_STEP_INFO + " > " + STEP_INFO
-            });
+            Shell.su("cat " + ORIG_STEP_INFO + " > " + STEP_INFO).exec();
             if(checkVersion(context)) {
                 raf = new RandomAccessFile(STEP_INFO, "r");
                 ciphertext = new byte[(int) raf.length()];
@@ -154,14 +153,10 @@ public class StepInfo extends StepData {
                 stepSignOutputStream.write(base64.getBytes());
                 stepSignOutputStream.close();
 
-                Shell.SU.run(new String[]{
-                        "cat " + STEP_SIGN_INFO + " > " + ORIG_STEP_SIGN_INFO
-                });
+                Shell.su("cat " + STEP_SIGN_INFO + " > " + ORIG_STEP_SIGN_INFO).exec();
             }
 
-            Shell.SU.run(new String[]{
-                    "cat " + STEP_INFO + " > " + ORIG_STEP_INFO
-            });
+            Shell.su("cat " + STEP_INFO + " > " + ORIG_STEP_INFO).exec();
         } catch (Throwable e) {
             return FAIL;
         }

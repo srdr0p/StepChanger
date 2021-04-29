@@ -6,13 +6,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.alibaba.fastjson.JSON;
+import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.chainfire.libsuperuser.Shell;
 import me.iweizi.stepchanger.R;
 import me.iweizi.stepchanger.StepData;
 import me.iweizi.stepchanger.utils.StepCounterSensorListener;
@@ -84,10 +84,8 @@ public class NewPedoMeter extends StepData {
     @Override
     public int read(Context context) {
         killAlipayProcess(context);
-        Shell.SU.run(new String[]{
-                "cat " + mAlipayNewPedometerPrivate + " > " + mNewPedometerPrivate,
-                "cat " + mAlipayNewPedometer + " > " + mNewPedometer
-        });
+        Shell.su("cat " + mAlipayNewPedometerPrivate + " > " + mNewPedometerPrivate,
+                "cat " + mAlipayNewPedometer + " > " + mNewPedometer).exec();
         mNewPedometerSP = context.getSharedPreferences("NewPedoMeter", Context.MODE_MULTI_PROCESS);
         mNewPedometerPrivateSP = context.getSharedPreferences("NewPedoMeter_private", Context.MODE_MULTI_PROCESS);
         return SUCCESS;
@@ -110,9 +108,7 @@ public class NewPedoMeter extends StepData {
         newLastRecord.setTime(lastUploadTime);
         newStepRecord.add(newLastRecord);
         saveStepRecord(newStepRecord);
-        Shell.SU.run(new String[]{
-                "cat " + mNewPedometerPrivate + " > " + mAlipayNewPedometerPrivate
-        });
+        Shell.su("cat " + mNewPedometerPrivate + " > " + mAlipayNewPedometerPrivate).exec();
         return SUCCESS;
     }
 
